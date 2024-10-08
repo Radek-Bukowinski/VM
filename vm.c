@@ -17,7 +17,12 @@
         -> implement other opcodes
         -> potential unsafe memcpy() in load_program?
         -> is there a need for free_vm()?
-        -> figure how to convert hex to ascii
+        -> figure how to convert hex to ascii - done
+
+        -> add ui
+        -> option to load different programs
+        -> option to load another program after one finishes
+        -> run the program in a thread
 */
 
 bool running = false;
@@ -149,8 +154,18 @@ void print_mem() {
 
 void print_stack() {
     for (size_t i = 0; i < STACK_MAX; i++) {
+        if (stack[i] == 0) {
+            break;
+        }
         printf("%li: %x\n", i, stack[i]);
     }
+}
+
+void clear_stack() {
+    memset(stack, 0x0, sizeof(stack));
+}
+void clear_memory() {
+    memset(memory, 0x0, sizeof(memory));
 }
 
 void op_load() {
@@ -221,6 +236,7 @@ void op_syscall() {
             char printable[arg + 1];
             memset(printable, '\0', sizeof(printable));
             for (size_t i = 0; i < arg; i++) {
+                *stack_ptr = 0;
                 stack_ptr--;
                 char temp = (char) *stack_ptr;
                 printable[i] = temp;
@@ -345,6 +361,7 @@ void run() {
                 break;
         }
         display_vm(I);
+        print_stack();
         decoded = "";
     }
 }

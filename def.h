@@ -17,6 +17,7 @@
 #define NYBL_3(i) (i & 0xF0) >> 4
 #define NYBL_4(i) (i & 0xF)
 
+#define ui32 uint32_t
 #define ui16 uint16_t
 #define ui8  uint8_t
 #define str char*

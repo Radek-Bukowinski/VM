@@ -1,5 +1,5 @@
 /*
-
+    
     
 
     1001 1001 1001 1001 -> 9999 in hex
@@ -76,6 +76,18 @@ syscall exit
 0x4121
 0x3212
 0x2310
+
+EXAMPLE PRINT
+
+push 0x48
+push 0x65
+push 0x6C
+push 0x6C
+push 0x6F
+
+load 5 arg
+syscall stdout
+syscall exit
 
 
     MEMORY

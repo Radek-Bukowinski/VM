@@ -1,0 +1,2 @@
+load r1 0xFFFF
+syscall exit
