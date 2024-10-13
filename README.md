@@ -1,4 +1,4 @@
-# 16 bit VM
+# Custom VM
 
 A hobby project to make a VM emulator for a simple custom CPU
 
@@ -8,6 +8,14 @@ Notes:
 - Values are 16 bit
   - Registers hold 16 bit values
   - Memory has 16 bit addresses to 16 bit values
+
+## Writing Programs
+I've written an assembler to compile human readable assembly into machine code
+```
+g++-11 -o ./bin/as assembler.cpp
+
+./bin/as [name_of_your_program].txt
+```
 
 ## Compilation
 
@@ -60,13 +68,21 @@ move r2 acc
 #### `memr`
 Read from an area of memory
 ```
+memr [address] [destination register]
+
+e.g.
+
 memr 0x23AB r1
 ```
 
 #### `memw`
 Write to an area of memory
 ```
+memw [source register] [address]
 
+e.g.
+
+memw r1 0x1234
 ```
 
 #### `syscall`
@@ -104,10 +120,21 @@ Pushes a value to the stack from a register
 #### `pop`
 Pops a value from the stack to a register
 
-#### `brp`
+#### `bpo`
 Branches to label if value stored in acc is positive
+```
+brp [label]
 
-#### `brn`
+e.g.
+
+brp .area
+
+...
+
+.area <- goes here
+```
+
+#### `bne`
 Branches to label if value stored in acc is negative
 
 #### `jump`
@@ -137,23 +164,14 @@ No operation
 
 ---
 ## Example program
+Print 'Hello'
 ```
-load r1 5
-
-memw &0x12 r1
-
-memr r2 &0x12
-
-move r3 r1
-
+push 0x48
+push 0x65
+push 0x6C
+push 0x6C
+push 0x6F
+load arg 0x5
+syscall stdout
 syscall exit
-```
-Is interpreted by the VM as:
-
-```
-0x1150
-0x4121
-0x3212
-0x2310
-0xF000
 ```
