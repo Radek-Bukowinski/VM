@@ -20,6 +20,6 @@
 #define ui32 uint32_t
 #define ui16 uint16_t
 #define ui8  uint8_t
-#define str char*
+#define c_str char*
 
 #endif
