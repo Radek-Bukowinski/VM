@@ -25,23 +25,54 @@ gcc -o ./bin/a.out vm.c
 ```
 
 ## Registers
-#### `stack_ptr (Stack Pointer)`
-> pointer to the top of the stack
 
-#### `acc (Accumulator)`
-> holds results of any calculations
+### Stack Pointer
+Points to the top of the stack\
+Moved when `pop` or `push` is used\
+Value retrieved to register when `push` is used
+```
+stack_ptr
+``` 
 
-#### `arg (Argument)`
-> Used for passing arguments to the VM
+### Accumulator
+Holds results of any calculations
+```
+acc
+```
+### Argument
+Used for passing arguments to the VM
+```
+arg
+```
 
-#### `pc (Program Counter)`
-> pointer to the next instruction
+### Program Counter
+Pointer to the next instruction\
+Cannot be accessed
+```
+pc
+```
 
-#### `flg (Flag)`
-> holds any flags raised
+### Flag
+Holds any flags raised\
+System notifies user if flag raised 
+```
+flg
 
-#### `r0 - r8 (General Purpose Registers)`
-> used for any purpose
+...
+
+POSITIVE
+OVERFLOW
+ZERO
+```
+
+### General Purpose Registers
+Used for any purpose\
+Hold any unsigned 16 bit value
+```
+r0
+...
+r8
+```
 
 ---
 ## Instructions
@@ -120,30 +151,46 @@ Pushes a value to the stack from a register
 #### `pop`
 Pops a value from the stack to a register
 
-#### `bpo`
+#### `jpo`
 Branches to label if value stored in acc is positive
 ```
-brp [label]
+jpo [label]
 
 e.g.
 
-brp .area
+jpo .area
 
 ...
 
-.area <- goes here
+.area <- pc jumps to here
 ```
 
-#### `bne`
+#### `jne`
 Branches to label if value stored in acc is negative
 
 #### `jump`
-Jumps to label
+Jumps to label, regardless of anything
 
 #### `nop`
 No operation
 
 ## Memory layout
+```
+ui32 memory[MEMORY_MAX]
+...
+MEMORY_MAX 1024
+```
+- Holds 1024 values of size unsigned integer
+- Divided into 3 sections: user, program, and system
+### User Space
+Holds user variables
+
+### Program Space
+Holds the users program
+
+### System Reserved Space
+Other memory reserved for system purposes
+```
      0 
      |
     ...     USER SPACE
@@ -161,7 +208,7 @@ No operation
     ...     SYSTEM RESERVED SPACE
      |
     1023
-
+```
 ---
 ## Example program
 Print 'Hello'
