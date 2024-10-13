@@ -23,6 +23,16 @@
         -> option to load different programs
         -> option to load another program after one finishes
         -> run the program in a thread
+
+        -> add flags functionality ( update_flags() )
+
+        -> add variables written in program
+
+            var test 0xFFAA
+            var new 0x0090
+
+            memory[0x0385] = 0xFFAA (test)
+            memory[0x0386] = Ox0090 (new)
 */
 
 bool running = false;
@@ -44,11 +54,12 @@ ui8 arg;                                // argument
 
 ui16 instruction;
 ui8 opcode;
-str decoded; // stores string of decoded opcoded
+c_str decoded; // stores string of decoded opcoded
 
 size_t program_alloc_end = 0; // program size
 
 enum flag {
+    POSITIVE,
     NEGATIVE,
     ZERO,
     OVERFLOW
@@ -60,7 +71,7 @@ int err_ex(char* error_msg) {
     return EXIT_FAILURE;
 }
 
-void load_program(str file_name) {
+void load_program(c_str file_name) {
 
     FILE* file_ptr = fopen(file_name, READ_ONLY);  
     if (file_ptr == NULL) {
@@ -92,26 +103,16 @@ void load_program(str file_name) {
 
 ui8* lookup_reg(ui8 reg) {
     switch(reg) {
-        case 0x1:
-            return &registers[0];
-        case 0x2:
-            return &registers[1];
-        case 0x3:
-            return &registers[2];
-        case 0x4:
-            return &registers[3];
-        case 0x5:
-            return &registers[4];
-        case 0x6:
-            return &registers[5];
-        case 0x7:
-            return &registers[6];
-        case 0x8:
-            return &registers[7];
-        case 0xA:
-            return &acc;
-        case 0xB:
-            return &arg;
+        case 0x1: return &registers[0];
+        case 0x2: return &registers[1];
+        case 0x3: return &registers[2];
+        case 0x4: return &registers[3];
+        case 0x5: return &registers[4];
+        case 0x6: return &registers[5];
+        case 0x7: return &registers[6];
+        case 0x8: return &registers[7];
+        case 0xA: return &acc;
+        case 0xB: return &arg;
         default:
             err_ex("register lookup not found");
             return 0;

@@ -5,12 +5,14 @@
 #include <sstream>
 #include <string.h>
 
+#include "def.h"
+
 using namespace std;
 
 string program_name;
-uint16_t program[128] = {0x0000};
+ui16 program[PROGRAM_MAX] = {0x0000};
 
-uint16_t str_to_hex(string word) {
+ui16 lookup_hex(string word) {
     if (word == "nop") { return 0x0; } 
     else if (word == "load") { return 0x1; } 
     else if (word == "move") { return 0x2; } 
@@ -42,14 +44,14 @@ uint16_t str_to_hex(string word) {
     else if (word[0] == '0') {
         stringstream ss;
         ss << hex << word.substr(2, 2);
-        uint16_t x;
+        ui16 x;
         ss >> x;
         return x;
     } 
     else { return 0x0; }
 }
 
-void write_program(uint16_t program[], size_t count) {
+void write_program(ui16 program[], size_t count) {
     ofstream file("prog.bin", ios::binary | ios::out);
 
     if (file.is_open()) {
@@ -69,7 +71,7 @@ int main(int argc, char *argv[]) {
         cout << "Selected program: " << program_name << "\n\n";
     }
 
-    ifstream file(program_name);
+    ifstream file("./programs/" + program_name);
     if (!file) {
         cerr << "Failed to open file | read user input \n";
         return 1;
@@ -95,10 +97,10 @@ int main(int argc, char *argv[]) {
     int pc = 0;
     cout << "Output program" << '\n';
     for (const auto& row : lines) {
-        uint16_t buffer[4] = {0x0000};
+        ui16 buffer[4] = {0x0000};
         int i = 0;
         for (const auto& word : row) {
-            uint16_t temp = str_to_hex(word);
+            ui16 temp = lookup_hex(word);
             if (temp > 0xF) {
                 buffer[i] = (temp & 0xF0) >> 4;
                 buffer[i + 1] = temp & 0x0F;
@@ -109,9 +111,9 @@ int main(int argc, char *argv[]) {
             i++;
         }
 
-        uint16_t hexed;
+        ui16 hexed;
 
-        for (uint16_t val : buffer) {
+        for (ui16 val : buffer) {
             hexed = (hexed << 4) | val;
         }
 
